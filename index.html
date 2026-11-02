@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Qanoot Jahangir</title>
+<meta name="theme-color" content="#f7f4ef">
+<meta name="description" content="Qanoot Jahangir — costs, income and profit for every collection and dress.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<script src="themes.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============================ LOGIN ============================ -->
+<div id="login" class="login" hidden>
+  <div class="login-box">
+    <img src="icons/icon-192.png" alt="" class="login-logo" width="72" height="72">
+    <h1>Qanoot Jahangir</h1>
+    <p class="sub center">Sign in with the name and access code from your Users sheet.</p>
+    <label for="lname">Name</label><input id="lname" autocomplete="username" maxlength="80">
+    <label for="lcode">Access code</label><input id="lcode" type="password" autocomplete="current-password" maxlength="80">
+    <div id="lurlWrap" hidden>
+      <label for="lurl">Server address (Apps Script Web app URL)</label>
+      <input id="lurl" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec">
+    </div>
+    <button class="btn" id="lgo">Sign in</button>
+    <div class="msg" id="lmsg"></div>
+    <button class="linkbtn" id="lurlToggle">Server settings</button>
+  </div>
+</div>
+
+<!-- ============================ APP ============================ -->
+<div id="app" class="wrap" hidden>
+  <header class="top">
+    <div class="brand">
+      <h1>Qanoot Jahangir</h1>
+      <div class="sub"><span id="user">…</span> · <span id="sync">…</span></div>
+    </div>
+    <div class="topbtns">
+      <button class="icon" id="refresh" aria-label="Sync now" title="Sync now">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.9-4M4 4v4h4M4 13a8 8 0 0 0 14.9 4M20 20v-4h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="icon" id="gear" aria-label="Settings" title="Settings">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <nav class="tabs">
+    <button data-tab="add" class="on">Add</button>
+    <button data-tab="proj">Collections</button>
+    <button data-tab="ppl">People</button>
+    <button data-tab="rep">Reports</button>
+  </nav>
+
+  <!-- ===================== ADD ===================== -->
+  <section class="page on" id="p-add">
+    <div class="card">
+      <div class="editbar" id="editBar" hidden><b>Editing entry</b><button class="btn sm ghost" id="cancelEdit">Cancel</button></div>
+      <div class="seg">
+        <button id="bExp" class="on e">Expense</button>
+        <button id="bInc" class="i">Income</button>
+      </div>
+      <label for="project">Collection / Dress</label>
+      <select id="project"></select>
+      <div class="row2">
+        <div><label for="category">Category</label><select id="category"></select></div>
+        <div><label for="sub">Subcategory</label><select id="sub"></select></div>
+      </div>
+      <label id="partyLabel" for="party">Paid to</label>
+      <select id="party"></select>
+      <div id="otherWrap" hidden>
+        <input id="partyOther" maxlength="80" placeholder="Type a name" style="margin-top:6px">
+        <label class="chk" style="margin-top:6px"><input type="checkbox" id="savePerson" checked> Also save to People list</label>
+      </div>
+      <div class="row2">
+        <div><label for="qty">Qty <span class="opt">(optional)</span></label><input type="number" id="qty" inputmode="decimal" step="any" min="0" placeholder="12"></div>
+        <div><label for="rate">Rate <span class="opt">(optional)</span></label><input type="number" id="rate" inputmode="decimal" step="any" min="0" placeholder="per unit"></div>
+      </div>
+      <div class="row2">
+        <div><label for="date">Date</label><input type="date" id="date"></div>
+        <div><label for="amount">Amount (<span class="cur"></span>)</label><input type="number" id="amount" inputmode="decimal" step="0.01" min="0" placeholder="0"></div>
+      </div>
+      <label for="desc">Description <span class="opt">(optional)</span></label><input id="desc" maxlength="200">
+      <button class="btn" id="save">Add entry</button>
+      <div class="msg" id="msg"></div>
+    </div>
+    <div class="card"><div class="h"><b>Latest entries</b><span class="meta">✎ edit · ✕ delete</span></div><table id="recent"></table></div>
+  </section>
+
+  <!-- ===================== COLLECTIONS ===================== -->
+  <section class="page" id="p-proj">
+    <div class="card">
+      <div class="h"><b>New collection or dress</b></div>
+      <div class="seg" id="kindSeg">
+        <button data-k="Collection" class="on">Collection</button>
+        <button data-k="Dress">Dress</button>
+      </div>
+      <label for="pname">Name</label><input id="pname" maxlength="80" placeholder="Bridal 2027">
+      <div id="dressFields" hidden>
+        <label for="pcoll">Collection</label><select id="pcoll"></select>
+        <label for="pclient">Client <span class="opt">(optional)</span></label><input id="pclient" maxlength="80">
+      </div>
+      <label for="pprice">Sale price (<span class="cur"></span>) <span class="opt">— optional, can be set later</span></label>
+      <input type="number" id="pprice" inputmode="decimal" step="0.01" min="0">
+      <button class="btn" id="padd">Create</button>
+      <div class="msg" id="pmsg"></div>
+    </div>
+    <div class="filters">
+      <select id="sfilter" aria-label="Status filter"><option>All</option><option>In Progress</option><option>Completed</option><option>Sold</option></select>
+      <label class="chk"><input type="checkbox" id="ovh"> Include overhead share</label>
+    </div>
+    <div id="ovhNote" class="note" hidden></div>
+    <div id="plist"></div>
+  </section>
+
+  <!-- ===================== PEOPLE ===================== -->
+  <section class="page" id="p-ppl">
+    <div class="card">
+      <div class="h"><b>Add person</b></div>
+      <div class="seg" id="pkSeg">
+        <button data-k="Employee" class="on">Employee</button>
+        <button data-k="Vendor">Vendor</button>
+        <button data-k="Client">Client</button>
+      </div>
+      <label for="hname">Name</label><input id="hname" maxlength="80">
+      <div class="row2">
+        <div><label for="hrole">Role / trade</label><input id="hrole" maxlength="60" placeholder="Embroidery karigar"></div>
+        <div><label for="hphone">Phone <span class="opt">(optional)</span></label><input id="hphone" maxlength="30" inputmode="tel"></div>
+      </div>
+      <button class="btn" id="hadd">Add</button>
+      <div class="msg" id="hmsg"></div>
+    </div>
+    <div class="filters">
+      <select id="hfilter" aria-label="People filter"><option value="Employee">Employees</option><option value="Vendor">Vendors</option><option value="Client">Clients</option><option value="All">Everyone</option></select>
+      <label class="chk"><input type="checkbox" id="hinactive"> Show inactive</label>
+    </div>
+    <div id="hlist"></div>
+  </section>
+
+  <!-- ===================== REPORTS ===================== -->
+  <section class="page" id="p-rep">
+    <div class="filters">
+      <select id="period" aria-label="Period"><option value="month">Month</option><option value="year">Year</option><option value="all">All time</option></select>
+      <input type="month" id="month" aria-label="Month" style="width:auto;flex:1">
+      <select id="year" aria-label="Year" hidden></select>
+    </div>
+    <div class="filters"><select id="rfilter" aria-label="Collection filter"></select></div>
+    <div class="tiles">
+      <div class="tile"><small>Income</small><b class="inc" id="tInc">0</b></div>
+      <div class="tile"><small>Expenses</small><b class="exp" id="tExp">0</b></div>
+      <div class="tile"><small>Profit</small><b id="tPro">0</b></div>
+    </div>
+    <div class="card"><div class="h"><b>By collection</b></div><table id="bycoll"></table></div>
+    <div class="card"><div class="h"><b>Expenses by category</b></div><div id="cats"></div></div>
+    <div class="card"><div class="h"><b>Paid to people</b></div><div id="byppl"></div></div>
+    <div class="card"><div class="h"><b>Income by category</b></div><div id="icats"></div></div>
+    <div class="card">
+      <div class="h"><b>Entries</b><span class="meta" id="rcount"></span></div>
+      <input id="q" placeholder="Search description, person, category…" style="margin-bottom:6px" aria-label="Search entries">
+      <table id="tbl"></table>
+    </div>
+  </section>
+
+  <!-- ===================== SETTINGS ===================== -->
+  <section class="page" id="p-set">
+    <div class="h"><button class="btn sm ghost" id="setBack">← Back</button><span></span></div>
+    <div class="card">
+      <div class="h"><b>Appearance</b></div>
+      <div class="seg" id="modeSeg">
+        <button data-m="auto">Automatic</button>
+        <button data-m="light">Light</button>
+        <button data-m="dark">Dark</button>
+      </div>
+      <div class="meta" style="margin:2px 0 6px">Automatic follows your phone's dark mode setting.</div>
+      <div class="sect">Light theme</div><div class="swatches" id="swLight"></div>
+      <div class="sect">Dark theme</div><div class="swatches" id="swDark"></div>
+    </div>
+    <div class="card">
+      <div class="h"><b>Sync</b></div>
+      <div class="kv"><span>Status</span><span id="setSync"></span></div>
+      <div class="kv"><span>Changes waiting on this phone</span><b id="setQueue">0</b></div>
+      <div id="setFailed"></div>
+      <div class="btns"><button class="btn sm" id="setSyncBtn">Sync now</button></div>
+    </div>
+    <div class="card" id="installCard" hidden>
+      <div class="h"><b>Install app</b></div>
+      <div class="meta">Add Qanoot Jahangir to your home screen so it opens like a normal app.</div>
+      <div class="btns"><button class="btn sm" id="installBtn">Install</button></div>
+    </div>
+    <div class="card">
+      <div class="h"><b>Account</b></div>
+      <div class="kv"><span>Signed in as</span><b id="setUser"></b></div>
+      <div class="btns"><button class="btn sm danger" id="logout">Sign out</button></div>
+      <div class="meta" style="margin-top:10px">Qanoot Jahangir · version <span id="ver"></span></div>
+    </div>
+  </section>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
