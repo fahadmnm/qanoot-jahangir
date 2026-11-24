@@ -9,8 +9,8 @@
   const nowLabel = () => { const d = new Date(); return fmtD(today()) + ', ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); };
   const sum = (rows, ty) => rows.reduce((s, r) => s + (!ty || r.type === ty ? r.amount : 0), 0);
   const pct = (n, t) => t ? Math.round(n / t * 100) + '%' : '—';
-  const signed = n => (n < 0 ? '−' : '') + fmt(Math.abs(n));
-  const money = n => fmt(n);
+  const signed = n => { const r = Math.round(Number(n) || 0); return (r < 0 ? '−' : '') + fmt(Math.abs(r)); };
+  const money = n => fmt(Math.round(Number(n) || 0));
   const sortDate = rows => rows.slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
   const lc = s => String(s || '').trim().toLowerCase();
 
@@ -202,11 +202,12 @@
         const ct = dressFigures(c, p.ovh);
         const rec = ds.reduce((s, d) => s + dressFigures(d, p.ovh).ownRec, 0) + ct.ownRec;
         const due = ds.reduce((s, d) => { const t = dressFigures(d, p.ovh); return s + (t.due > 0 ? t.due : 0); }, 0);
-        const B = [tiles([['Total cost' + (p.ovh ? ' incl. overhead' : ''), money(ct.cost), 'exp'], ['Sale value', ct.revenue ? money(ct.revenue) : '—', ''],
-          ['Profit' + marginTxt(ct), ct.revenue ? signed(ct.profit) : '—', ct.profit >= 0 ? 'inc' : 'exp'], ['Received', money(rec), 'inc'], ['Balance due', money(due), due > 0 ? 'exp' : '']])];
+        const B = [tiles([[p.ovh ? 'Cost + overhead' : 'Total cost', money(ct.cost), 'exp'], ['Sale value', ct.revenue ? money(ct.revenue) : '—', ''],
+          ['Profit' + marginTxt(ct), ct.revenue ? signed(ct.profit) : '—', !ct.revenue ? '' : ct.profit >= 0 ? 'inc' : 'exp'], ['Received', money(rec), 'inc'], ['Balance due', money(due), due > 0 ? 'exp' : '']])];
         const figs = ds.map(d => ({ d, t: dressFigures(d, p.ovh) }));
         if (figs.length) {
-          B.push(H('Cost and sale price by dress'), chart(hbars(figs.map(f => ({ label: f.d.name, v: f.t.cost, v2: f.t.revenue })), [{ name: 'Cost', c: 'exp' }, { name: 'Sale price', c: 'inc' }])));
+          if (figs.some(f => f.t.revenue > 0)) B.push(H('Cost and sale price by dress'), chart(hbars(figs.map(f => ({ label: f.d.name, v: f.t.cost, v2: f.t.revenue })), [{ name: 'Cost', c: 'exp' }, { name: 'Sale price', c: 'inc' }])));
+          else B.push(H('Cost by dress'), chart(hbars(figs.map(f => ({ label: f.d.name, v: f.t.cost })), [{ name: 'Cost', c: 'ink' }])));
           const own = costMap()[c.name] || { cost: 0 };
           const body = figs.map(f => row([esc(f.d.name) + (f.d.client ? '<small>' + esc(f.d.client) + '</small>' : ''), esc(f.d.status), money(f.t.cost), f.t.revenue ? money(f.t.revenue) : '—', f.t.revenue ? signed(f.t.profit) : '—', f.t.margin === null ? '—' : Math.round(f.t.margin) + '%']));
           if (own.cost) body.push(row(['Collection-level costs<small>Photoshoots, shows and other shared costs</small>', '', money(own.cost + (p.ovh ? overheadShare(costMap()).fn(c.name) : 0)), '', signed(-(own.cost + (p.ovh ? overheadShare(costMap()).fn(c.name) : 0))), '']));
@@ -214,7 +215,7 @@
             ['Total', '', money(ct.cost), ct.revenue ? money(ct.revenue) : '—', ct.revenue ? signed(ct.profit) : '—', ct.margin === null ? '—' : Math.round(ct.margin) + '%']));
           B.push(H('Payments from clients'), table([col('Dress'), col('Client'), col('Sale price', 1), col('Received', 1), col('Due', 1)],
             figs.map(f => row([esc(f.d.name), esc(f.d.client), f.d.price ? money(f.d.price) : '—', money(f.t.ownRec), f.t.due === null ? '—' : f.t.due > 0 ? money(f.t.due) : 'Paid'])),
-            ['Total', '', money(ds.reduce((s, d) => s + d.price, 0)), money(figs.reduce((s, f) => s + f.t.ownRec, 0)), money(due)]));
+            ['Total', '', ds.some(d => d.price > 0) ? money(ds.reduce((s, d) => s + d.price, 0)) : '—', money(figs.reduce((s, f) => s + f.t.ownRec, 0)), ds.some(d => d.price > 0) ? money(due) : '—']));
         } else B.push(empty('This collection has no dresses yet.'));
         const exp = V.rows.filter(r => names.indexOf(r.project) >= 0 && r.type === 'Expense');
         if (exp.length) B.push(H('Cost breakdown'), catTable(exp));
@@ -234,8 +235,8 @@
         const t = dressFigures(d, p.ovh);
         const rows = V.rows.filter(r => r.project === d.name), exp = rows.filter(r => r.type === 'Expense'), inc = rows.filter(r => r.type === 'Income');
         const B = [kv([['Collection', d.collection || 'Standalone'], ['Client', d.client], ['Status', d.status]]),
-          tiles([['Cost' + (p.ovh ? ' incl. overhead' : ''), money(t.cost), 'exp'], ['Sale price', t.revenue ? money(t.revenue) : '—', ''],
-            ['Profit' + marginTxt(t), t.revenue ? signed(t.profit) : '—', t.profit >= 0 ? 'inc' : 'exp'], ['Received', money(t.ownRec), 'inc'],
+          tiles([[p.ovh ? 'Cost + overhead' : 'Cost', money(t.cost), 'exp'], ['Sale price', t.revenue ? money(t.revenue) : '—', ''],
+            ['Profit' + marginTxt(t), t.revenue ? signed(t.profit) : '—', !t.revenue ? '' : t.profit >= 0 ? 'inc' : 'exp'], ['Received', money(t.ownRec), 'inc'],
             ['Balance due', t.due === null ? '—' : t.due > 0 ? money(t.due) : 'Paid in full', t.due > 0 ? 'exp' : 'inc']])];
         if (p.ovh && t.ovh) B.push(kv([['Direct cost', money(t.direct)], ['Overhead share (estimate)', money(t.ovh)]]));
         if (exp.length) {

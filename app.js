@@ -1,6 +1,6 @@
 /* Qanoot Jahangir — app logic. */
 'use strict';
-const APP_VERSION = '1.1.1';
+const APP_VERSION = '1.1.2';
 
 /* =============================== storage, state & helpers =============================== */
 const LS = {
