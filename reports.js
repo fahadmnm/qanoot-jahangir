@@ -282,12 +282,16 @@
         const pays = V.rows.filter(r => r.type === 'Income' && (lc(r.party) === lc(p.client) || (names.indexOf(r.project) >= 0 && !r.party)));
         const price = ds.reduce((s, d) => s + d.price, 0), paid = sum(pays);
         const ps = V.people.find(x => lc(x.name) === lc(p.client));
+        const unpriced = ds.filter(d => !(d.price > 0));
+        const bal = price - paid;
+        const balTxt = !price ? '—' : bal > 0 ? money(bal) : bal < 0 ? 'Overpaid ' + money(-bal) : 'Paid in full';
         const B = [kv([['Phone', ps ? ps.phone : ''], ['Statement date', fmtD(today())]]),
-          tiles([['Total price', money(price), ''], ['Paid', money(paid), 'inc'], ['Balance due', price - paid > 0 ? money(price - paid) : 'Paid in full', price - paid > 0 ? 'exp' : 'inc']])];
+          tiles([['Total price', price ? money(price) : 'Not set', ''], ['Paid', money(paid), 'inc'], ['Balance due', balTxt, !price ? '' : bal > 0 ? 'exp' : 'inc']])];
+        if (unpriced.length) B.push(note(unpriced.length === ds.length ? 'None of these dresses has a sale price yet, so the balance can’t be worked out. Set the sale price on each dress card in Collections.' : unpriced.length + ' of these dresses ' + (unpriced.length === 1 ? 'has' : 'have') + ' no sale price yet, so ' + (unpriced.length === 1 ? 'it isn’t' : 'they aren’t') + ' included in the balance. Set the sale price on the dress card in Collections.'));
         if (ds.length) {
           B.push(H('Dresses'), table([col('Dress'), col('Collection'), col('Status'), col('Price', 1), col('Paid', 1), col('Due', 1)],
-            ds.map(d => { const pd = sum(pays.filter(r => r.project === d.name)); return row([esc(d.name), esc(d.collection || '—'), esc(d.status), d.price ? money(d.price) : '—', money(pd), d.price ? (d.price - pd > 0 ? money(d.price - pd) : 'Paid') : '—']); }),
-            ['Total', '', '', money(price), money(sum(pays.filter(r => names.indexOf(r.project) >= 0))), money(Math.max(price - sum(pays.filter(r => names.indexOf(r.project) >= 0)), 0))]));
+            ds.map(d => { const pd = sum(pays.filter(r => r.project === d.name)); return row([esc(d.name), esc(d.collection || 'Standalone'), esc(d.status), d.price ? money(d.price) : 'Not set', money(pd), d.price ? (d.price - pd > 0 ? money(d.price - pd) : 'Paid') : '—']); }),
+            ['Total', '', '', price ? money(price) : '—', money(sum(pays.filter(r => names.indexOf(r.project) >= 0))), price ? money(Math.max(price - sum(pays.filter(r => names.indexOf(r.project) >= 0)), 0)) : '—']));
         } else B.push(note('No dresses list ' + p.client + ' as the client. To link a dress, set its Client field on the Collections tab.'));
         if (pays.length) B.push(H('Payments'), entryTable(pays, { project: true, party: false }));
         else B.push(empty('No payments recorded yet.'));
