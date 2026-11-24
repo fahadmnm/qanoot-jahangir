@@ -103,3 +103,82 @@ td small, .meta { color: var(--mut); display: block; font-size: 12px; }
 .login-box { width: 100%; max-width: 380px; background: var(--card); border: 1px solid var(--bd); border-radius: 16px; padding: 24px 20px; text-align: center; }
 .login-box label, .login-box input { text-align: left; }
 .login-logo { border-radius: 18px; display: block; margin: 0 auto 8px; }
+
+/* ================= reports ================= */
+.rlib { display: flex; flex-direction: column; }
+.rlib-item { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--bd); padding: 11px 2px; cursor: pointer; color: var(--tx); font: inherit; }
+.rlib-item:first-child { border-top: 0; }
+.rlib-item b { display: block; font-size: 15px; }
+.rlib-item small { display: block; color: var(--mut); font-size: 12px; margin-top: 2px; }
+.rlib-item .chev { color: var(--mut); font-size: 22px; line-height: 1; }
+.rparams { padding: 10px 14px 14px; }
+.rparams .pf label:first-child { margin-top: 4px; }
+.exportbar { display: flex; gap: 8px; margin-bottom: 12px; }
+.exportbar .btn { flex: 1; }
+.genbtns { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+
+/* report content — chart colours validated for colour-blind readers (light and dark) */
+.rpt { --cinc: #1f7a4d; --cexp: #e0806f; color: var(--tx); }
+html[data-dark="1"] .rpt:not(.print) { --cinc: #1b7049; --cexp: #df6c57; }
+.rpt .blk { padding-bottom: 14px; }
+.rpt .blk-h { padding-bottom: 4px; }
+.rpt .blk-h h3 { font-size: 15px; margin: 8px 0 0; color: var(--ti); font-weight: 600; letter-spacing: .01em; }
+.rhead { display: flex; gap: 12px; align-items: center; }
+.rlogo { border-radius: 12px; flex: none; }
+.rbrand { font: 600 13px Georgia, 'Times New Roman', serif; color: var(--ti); letter-spacing: .06em; text-transform: uppercase; }
+.rtitle { font: 600 20px Georgia, 'Times New Roman', serif; color: var(--tx); line-height: 1.2; margin-top: 2px; }
+.rsub { color: var(--mut); font-size: 13px; margin-top: 2px; }
+.rmeta { color: var(--mut); font-size: 11px; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--bd); }
+.rtiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.rtile { background: var(--card); border: 1px solid var(--bd); border-radius: 10px; padding: 9px 10px; min-width: 0; }
+.rtile small { display: block; color: var(--mut); font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; }
+.rtile b { font-size: 17px; font-variant-numeric: tabular-nums; word-break: break-word; }
+.rkv { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; }
+.rkv small { display: block; color: var(--mut); font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; }
+.rnote { font-size: 12px; color: var(--mut); background: var(--soft); border-radius: 8px; padding: 8px 10px; }
+.rempty { color: var(--mut); text-align: center; padding: 18px 10px; border: 1px dashed var(--bd); border-radius: 10px; font-size: 14px; }
+.tscroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.rt { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.rt th { text-align: left; font-weight: 600; color: var(--mut); font-size: 11px; text-transform: uppercase; letter-spacing: .03em; padding: 6px 6px; border-bottom: 1.5px solid var(--bd); white-space: nowrap; }
+.rt td { padding: 6px 6px; border-top: 1px solid var(--bd); vertical-align: top; }
+.rt .n { text-align: right; white-space: nowrap; }
+.rt td small { display: block; color: var(--mut); font-size: 11px; }
+.rt tr.grp td { font-weight: 600; }
+.rt tr.sub td { border-top-style: dotted; color: var(--mut); }
+.rt .ind { padding-left: 14px; display: inline-block; }
+.rt tfoot td { font-weight: 700; border-top: 1.5px solid var(--tx); }
+.rpt .pend { color: var(--ink); font-size: 10px; font-weight: 600; white-space: nowrap; }
+
+/* chart marks: income solid, expenses striped (second encoding, not colour alone) */
+.sw-ink { background: var(--ink); }
+.sw-inc { background: var(--cinc); }
+.sw-exp { background-color: var(--cexp); background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.38) 0 2px, transparent 2px 6px); }
+.lg { display: flex; gap: 14px; font-size: 12px; color: var(--mut); margin-bottom: 8px; }
+.lg span { display: inline-flex; align-items: center; gap: 6px; }
+.lg i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.hb-row { display: grid; grid-template-columns: minmax(0, 36%) minmax(0, 1fr); gap: 10px; align-items: center; margin: 7px 0; }
+.hb-lab { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hb-line { display: flex; align-items: center; gap: 8px; }
+.hb-line + .hb-line { margin-top: 2px; }
+.hb-track { flex: 1; height: 10px; min-width: 0; }
+.hb-fill { height: 10px; border-radius: 0 4px 4px 0; }
+.hb-val { font-size: 12px; min-width: 72px; text-align: right; font-variant-numeric: tabular-nums; color: var(--tx); }
+.cc-max { font-size: 11px; color: var(--mut); margin-bottom: 2px; }
+.cc-plot { display: flex; align-items: flex-end; gap: 4px; height: 150px; border-bottom: 1px solid var(--mut); border-top: 1px dashed var(--bd); }
+.cc-col { flex: 1; display: flex; align-items: flex-end; gap: 2px; height: 100%; min-width: 0; }
+.cc-bar { flex: 1; border-radius: 4px 4px 0 0; min-width: 0; }
+.cc-labs { display: flex; gap: 4px; margin-top: 4px; }
+.cc-labs div { flex: 1; font-size: 10px; color: var(--mut); text-align: center; white-space: nowrap; overflow: visible; min-width: 0; }
+
+/* export layout: always light, A4 pages (794 × 1123 px) */
+.rpt.print { --bg: #ffffff; --card: #ffffff; --ink: #2b2622; --tx: #1f1b18; --mut: #6f665d; --soft: #f3eee7; --bd: #e2dcd3; --inc: #1f7a4d; --exp: #b3392b; --ti: #2b2622; color: var(--tx); background: #fff; }
+.rhost { position: fixed; left: -12000px; top: 0; width: 794px; font: 15px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+.rpage { width: 794px; height: 1123px; background: #fff; padding: 44px 46px 0; display: flex; flex-direction: column; }
+.rpage-body { height: calc(1123px - 44px - 46px); overflow: hidden; }
+.rpage-foot { height: 46px; display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; color: var(--mut); border-top: 1px solid var(--bd); }
+.rimg { width: 794px; background: #fff; padding: 36px 40px 24px; }
+.rimg-foot { font-size: 10.5px; color: var(--mut); border-top: 1px solid var(--bd); padding-top: 8px; }
+.print .rt { font-size: 12px; }
+.print .hb-lab { font-size: 12.5px; }
+.tscroll .rt td, .tscroll .rt th { white-space: nowrap; }
+.tscroll .rt td:first-child { white-space: normal; min-width: 120px; }

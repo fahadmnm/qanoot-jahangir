@@ -1,6 +1,6 @@
 /* Qanoot Jahangir — app logic. */
 'use strict';
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.1.0';
 
 /* =============================== storage, state & helpers =============================== */
 const LS = {
@@ -393,6 +393,7 @@ function projCard(p, cls, m, sh) {
       <div class="btns">
         <button class="btn sm" data-act="save">Save</button>
         <button class="btn sm ghost" data-act="entry">+ Add entry</button>
+        <button class="btn sm ghost" data-act="report">${isD ? 'Cost sheet' : 'Report'}</button>
         <button class="btn sm danger" data-act="del">Delete</button>
       </div>
       <div class="msg" data-f="msg"></div>
@@ -417,7 +418,7 @@ function renderProjects() {
   const g = m[V.general] || { cost: 0, rec: 0 };
   h += `<div class="proj gen" data-name="${esc(V.general)}"><div class="ph"><div class="pt"><b>${esc(V.general)}</b><span class="badge">Not tied to a dress</span></div>
     <div class="nums"><span><span class="lbl">Cost</span><b class="exp">${fmt(g.cost)}</b></span><span><span class="lbl">Income</span><b class="inc">${fmt(g.rec)}</b></span>
-    <span><button class="btn sm ghost" data-act="entry">+ Add entry</button></span></div></div></div>`;
+    <span class="genbtns"><button class="btn sm ghost" data-act="entry">+ Add</button><button class="btn sm ghost" data-act="report">Report</button></span></div></div></div>`;
   $('plist').innerHTML = h;
   $('ovh').checked = S.ovh;
   $('ovhNote').hidden = !S.ovh;
@@ -434,6 +435,13 @@ $('plist').onclick = ev => {
   const f = k => card.querySelector(`[data-f="${k}"]`);
   const a = act && act.act;
   if (a === 'entry') { endEdit(); ensureOption($('project'), name); showTab('add'); window.scrollTo(0, 0); return; }
+  if (a === 'report') {
+    const p = V.projects.find(x => x.name === name);
+    if (!p) QJR.open('overhead', {}, 'proj');
+    else if (p.kind === 'Collection') QJR.open('collection', { collection: name }, 'proj');
+    else QJR.open('dress', { dress: name }, 'proj');
+    return;
+  }
   if (a === 'save') {
     const btn = ev.target.closest('button');
     call('updateProject', { name, newName: f('name').value, price: parseFloat(f('price').value) || 0,
@@ -484,6 +492,7 @@ function renderPeople() {
         <div class="btns">
           <button class="btn sm" data-act="save">Save</button>
           <button class="btn sm ghost" data-act="pay">+ Add payment</button>
+          <button class="btn sm ghost" data-act="report">Statement</button>
           <button class="btn sm danger" data-act="del">Delete</button>
         </div>
         <div class="msg" data-f="msg"></div>
@@ -512,6 +521,11 @@ $('hlist').onclick = ev => {
     const lc = p && p.kind === 'Employee' ? Object.keys(V.categories.Expense || {}).find(isLabor) : undefined;
     fillCats(lc); fillParty(name);
     showTab('add'); window.scrollTo(0, 0); return;
+  }
+  if (a === 'report') {
+    const p = V.people.find(x => x.name === name);
+    if (p && p.kind === 'Client') QJR.open('client', { client: name }, 'ppl'); else QJR.open('person', { person: name }, 'ppl');
+    return;
   }
   if (a === 'del') { if (confirm('Delete "' + name + '"?')) call('deletePerson', name, { btn: ev.target.closest('button'), err: f('msg') }); return; }
   if (ev.target.closest('.ph')) { S.hopen[name] = !S.hopen[name]; card.classList.toggle('open', S.hopen[name]); }
@@ -619,6 +633,7 @@ function renderAll() {
   $('recent').innerHTML = entryRows(V.rows.slice(-15).reverse());
   renderProjects(); renderPeople(); fillReportFilters(); renderReports();
   if (S.tab === 'set') renderSettings();
+  if (window.QJR) QJR.refresh();
   status();
 }
 

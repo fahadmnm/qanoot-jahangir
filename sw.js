@@ -2,8 +2,8 @@
  * Opens instantly (and offline) from the phone's copy, and quietly fetches any newer
  * version in the background, so updates appear the next time the app is opened.
  * Only the app's own files are cached; your data always goes straight to Google. */
-const CACHE = 'qj-app-v1';
-const SHELL = ['./', './index.html', './style.css', './app.js', './themes.js', './config.js', './manifest.webmanifest',
+const CACHE = 'qj-app-v2';
+const SHELL = ['./', './index.html', './style.css', './app.js', './reports.js', './lib-html-to-image.js', './themes.js', './config.js', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

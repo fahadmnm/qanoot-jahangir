@@ -145,6 +145,11 @@
 
   <!-- ===================== REPORTS ===================== -->
   <section class="page" id="p-rep">
+    <div class="card">
+      <div class="h"><b>Reports</b><span class="meta">Open one, then export as PDF or image</span></div>
+      <div id="rlib" class="rlib"></div>
+    </div>
+    <div class="h" style="margin-top:4px"><b>Quick overview</b><button class="btn sm ghost" id="dashToReport">Open as report</button></div>
     <div class="filters">
       <select id="period" aria-label="Period"><option value="month">Month</option><option value="year">Year</option><option value="all">All time</option></select>
       <input type="month" id="month" aria-label="Month" style="width:auto;flex:1">
@@ -165,6 +170,18 @@
       <input id="q" placeholder="Search description, person, category…" style="margin-bottom:6px" aria-label="Search entries">
       <table id="tbl"></table>
     </div>
+  </section>
+
+  <!-- ===================== REPORT VIEWER ===================== -->
+  <section class="page" id="p-view">
+    <div class="h"><button class="btn sm ghost" id="viewBack">← Back</button><b id="viewTitle"></b></div>
+    <div class="card rparams" id="rparams"></div>
+    <div class="exportbar">
+      <button class="btn sm" id="expPdf">Export PDF</button>
+      <button class="btn sm ghost" id="expImg">Export image</button>
+    </div>
+    <div class="card" id="expPanel" hidden></div>
+    <div class="rpt" id="rbody"></div>
   </section>
 
   <!-- ===================== SETTINGS ===================== -->
@@ -204,5 +221,6 @@
 
 <script src="config.js"></script>
 <script src="app.js"></script>
+<script src="reports.js"></script>
 </body>
 </html>
